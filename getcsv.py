@@ -69,6 +69,6 @@ class ADataset:
 if __name__ == '__main__':
     
     client = ADataset()
-    client.pdfdir = 'pdfs/1.- Sesión 611 del Pleno - Moción Asambleísta Peña forma de debatir Informe Segundo Debate Reformatoria COIP.pdf'
+    client.pdfdir = '1.- Sesión 611 del Pleno - Moción Asambleísta Peña forma de debatir Informe Segundo Debate Reformatoria COIP.pdf'
     client.main()
     

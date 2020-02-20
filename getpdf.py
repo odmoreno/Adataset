@@ -1,11 +1,18 @@
 from requests import get
 from urllib.parse import urljoin
-from os import path, getcwd
+import os
+from os import path, getcwd, makedirs
 from bs4 import BeautifulSoup as soup
 import sys
 import logging
 
 
+base_url = 'http://guest:guest@documentacion.asambleanacional.gob.ec'
+url = 'http://guest:guest@documentacion.asambleanacional.gob.ec/alfresco/webdav/Documentos%20Web/Votaciones%20del%20Pleno'
+base_dir = 'pdfs/'
+current_dir = ''
+mesdir = ''
+tmpdir = ''
 
 def get_page(base_url):
   req = get(base_url)
@@ -26,22 +33,26 @@ def get_links_to_nav(base_url):
   links = get_all_links(html)
 
   if len(links) == 0:
-      logging.warning('No links found on the webpage.')
-      raise Exception('No links found on the webpage')
+    logging.warning('No links found on the webpage.')
+    raise Exception('No links found on the webpage')
   return links
 
-def get_name(text):
+def validate_name(text):
   tmp = ''
-  if (len(text) > 50):
+  size = len(text)
+  if (len(text) > 120):
     tmp = text[:50]
     tmp2 = tmp[-4:]
     print(tmp2)
     print(tmp)
-      if (tmp2 != '.pdf'):
-        tmp = tmp + '.pdf'
-        
-  return tmp
+    if (tmp2 != '.pdf'):
+      tmp = tmp + '.pdf'    
+    return tmp
+  return text
 
+def validate_dir(path):
+  if not os.path.exists(path):
+    makedirs(path)
 
 def get_pdf(base_url, base_dir):
   logging.basicConfig(filename=path.join(base_dir, 'downloads_log.log'), level=logging.INFO, format='%(asctime)s %(message)s')
@@ -64,7 +75,7 @@ def get_pdf(base_url, base_dir):
   for link in links:
       current_link = link.get('href')  # This line and the line below
       text = link.contents
-      name = get_name(text[0])
+      name = validate_name(text[0])
       if current_link.endswith('pdf'):
           weblink = urljoin(base_url, link['href'])
           logging.info('pdf file found at ' + weblink)
@@ -116,32 +127,45 @@ def get_all_sessions(base_url, url, base_dir):
   for link in links:
     #Años 2013-2018
     current_link = link.get('href')
+    
+    text = link.contents
+    name = validate_name(text[0])
+    current_dir = base_dir + name + '/'
+    validate_dir(current_dir)
+    
     current_link = base_url + current_link
     meses = get_links_to_nav(current_link)
     #meses = meses[1:]
     for mes in meses:
       #Meses del año correspondiente
       current_mes = mes.get('href')
+
+      textM = mes.contents
+      name = validate_name(textM[0])
+      
+      mesdir = current_dir + name + '/'
+      validate_dir(mesdir) 
+
       current_mes = base_url + current_mes
       sesiones = get_links_to_nav(current_mes)
       #sesiones = sesiones[1:]
       for sesion in sesiones:
         #sesion actual 
         sesion_link = sesion.get('href')
+
+        text = sesion.contents
+        name = validate_name(text[0])
+        tmpdir = mesdir + name + '/'
+        #current_dir = current_dir + name + '/'
+        validate_dir(tmpdir)
+
         sesion_link = base_url + sesion_link
-        get_pdf(sesion_link, base_dir)
+        get_pdf(sesion_link, tmpdir)
+        
 
 
 if __name__ == "__main__":
-  base_url = ''
-  base_dir = '' #example r'C:\User'
-
-  if base_dir or base_url:
-      print('Please, assign values to base_url and base_dir.')
-
-  base_url = 'http://guest:guest@documentacion.asambleanacional.gob.ec'
-  url = 'http://guest:guest@documentacion.asambleanacional.gob.ec/alfresco/webdav/Documentos%20Web/Votaciones%20del%20Pleno'
-  base_dir = 'pdfs/'
+  
   #get_pdf(base_url,base_dir)
   get_all_sessions(base_url, url, base_dir)
 

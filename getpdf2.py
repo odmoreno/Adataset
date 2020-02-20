@@ -140,6 +140,6 @@ base_dir = '' #example r'C:\User'
 if base_dir or base_url:
     print('Please, assign values to base_url and base_dir.')
 
-base_url = 'http://guest:guest@documentacion.asambleanacional.gob.ec/alfresco/webdav/Documentos%20Web/Votaciones%20del%20Pleno/A%C3%B1o%202013/Mayo/Sesi%C3%B3n%2000%20del%20Pleno%20instalaci%C3%B3n%20%2814-05-2013%29'
+base_url = 'http://guest:guest@documentacion.asambleanacional.gob.ec/alfresco/webdav/Documentos%20Web/Votaciones%20del%20Pleno/A%C3%B1o%202013/Julio/Sesi%C3%B3n%20146%20del%20Pleno%20continuaci%C3%B3n%20%2830-07-2013%29'
 base_dir = 'pdfs/'
 get_pdf(base_url,base_dir)
