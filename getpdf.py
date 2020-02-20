@@ -34,7 +34,7 @@ def get_links_to_nav(base_url):
 
   if len(links) == 0:
     logging.warning('No links found on the webpage.')
-    raise Exception('No links found on the webpage')
+    #raise Exception('No links found on the webpage')
   return links
 
 def validate_name(text):
@@ -67,7 +67,7 @@ def get_pdf(base_url, base_dir):
   links = get_all_links(html)
   if len(links) == 0:
       logging.warning('No links found on the webpage.')
-      raise Exception('No links found on the webpage')
+      #raise Exception('No links found on the webpage')
 
   n_pdfs = 0
   n_saved_pdfs = 0
