@@ -1,7 +1,7 @@
 from tabula import read_pdf
 import pandas as pd
 import fitz
-
+from validate import validate_df
 
 class ADataset:
 
@@ -22,13 +22,15 @@ class ADataset:
 
   def concat_dfs(self, list):
     current_df = list[0] #obtenemos la primera tabla
-    current_df = self.validate_df(current_df)
+    #current_df = self.validate_df(current_df)
+    current_df = validate_df(current_df)
     #current_df = current_df[:-1] #Eliminamos la ultima fila, que representa el total de tal opcion de votacion
     tmp = list[1:] # Como tenmos la primera tabla, no la necesitamos mas y la descartamos
     df = None
     for element in tmp:
       #element = element[:-1] #Elimina ultima fila
-      element = self.validate_df(element)
+      #element = self.validate_df(element)
+      element = validate_df(element)
       df = pd.concat([current_df, element], axis=0, ignore_index=True)
       current_df = df
       print(df)
@@ -66,65 +68,65 @@ class ADataset:
     info = self.get_info()
     self.write_info(info)
 
-  def validate_df(self, df):
-    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    df.dropna(inplace=True)
-    #df = self.validate_last_row(df)
-    if not 'Curul' in df.columns: 
-      if df.columns[1] != 'Curul':
-        name_ = df.columns[1]
-        values = df[name_].tolist()
-        numm = values[0]
-        if numm[0].isdigit(): self.mixFlag = True
+  #def validate_df(self, df):
+  #  df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+  #  df.dropna(inplace=True)
+  #  #df = self.validate_last_row(df)
+  #  if not 'Curul' in df.columns: 
+  #    if df.columns[1] != 'Curul':
+  #      name_ = df.columns[1]
+  #      values = df[name_].tolist()
+  #      numm = values[0]
+  #      if numm[0].isdigit(): self.mixFlag = True
+#
+  #    name_ = df.columns[1]
+  #    curul = []
+  #    asambleista = []
+  #    if self.mixFlag:
+  #      name_ = df.columns[1]
+  #      values = df[name_].tolist()
+  #      for value in values:
+  #        v1, v2 = self.validate_num_col((value))
+  #        curul.append(v1)
+  #        asambleista.append(v2)
+  #      self.mixFlag = False
+  #      #self.curulFlag = False
+  #    df['Curul'] = curul
+  #    df['Asambleista'] = asambleista
+#
+  #    del df[name_]
+  #    print(df)
+  #  return df
 
-      name_ = df.columns[1]
-      curul = []
-      asambleista = []
-      if self.mixFlag:
-        name_ = df.columns[1]
-        values = df[name_].tolist()
-        for value in values:
-          v1, v2 = self.validate_num_col((value))
-          curul.append(v1)
-          asambleista.append(v2)
-        self.mixFlag = False
-        #self.curulFlag = False
-      df['Curul'] = curul
-      df['Asambleista'] = asambleista
-
-      del df[name_]
-      print(df)
-    return df
-
-  def validate_num_col(self, value):
-    value = str(value)
-    size = len(value)
-    num = ''
-    name = ''
-
-    if(size <= 2):
-      v1 = value[0]
-      v2 = v1 + value[1]
-      num = v2
-      return num, name
-    else:
-      v1 = value[0]
-      v2 = v1 + value[1]
-      v3 = v2 + value[2]
-
-
-    if v1.isdigit():
-      if v2.isdigit():
-        if v3.isdigit():
-          num = v3
-          name = value[4:]
-        else:
-          num = v2
-          name = value[3:]
-      else:
-        num = v1
-        name = value[2:]
-    return num, name
+  #def validate_num_col(self, value):
+  #  value = str(value)
+  #  size = len(value)
+  #  num = ''
+  #  name = ''
+#
+  #  if(size <= 2):
+  #    v1 = value[0]
+  #    v2 = v1 + value[1]
+  #    num = v2
+  #    return num, name
+  #  else:
+  #    v1 = value[0]
+  #    v2 = v1 + value[1]
+  #    v3 = v2 + value[2]
+#
+#
+  #  if v1.isdigit():
+  #    if v2.isdigit():
+  #      if v3.isdigit():
+  #        num = v3
+  #        name = value[4:]
+  #      else:
+  #        num = v2
+  #        name = value[3:]
+  #    else:
+  #      num = v1
+  #      name = value[2:]
+  #  return num, name
 
   def validate_last_row(self, df):
     last = df[-1:]
