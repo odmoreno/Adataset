@@ -1,3 +1,5 @@
-pdfs
+
 .vscode
 .idea
+/pdfs
+/__pycache__

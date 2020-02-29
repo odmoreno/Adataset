@@ -1,17 +1,20 @@
 import pandas as pd
 
 mixFlag = False
-curul = []
-asambleista = []
+
 
 
 def validate_nans(df):
   #df.dropna(inplace=True)
   dftmp = df[df.isnull().any(axis=1)]
   print(dftmp)
-  pass
+  if dftmp.size > 0 :
+    df.dropna(inplace=True)
+    return df
+  else:
+    return df
 
-def validate_num_col(self, value):
+def validate_num_col(value):
   value = str(value)
   size = len(value)
   num = ''
@@ -39,14 +42,19 @@ def validate_num_col(self, value):
   return num, name
 
 def validate_rows(df):
+  #print(df)
   cols = ['nro.', 'curul', 'asambleista', 'voto']
   dfcols = df.columns.values
+  df.columns = map(str.lower, df.columns)
   dfcols = [x.lower() for x in dfcols]
   s = set(dfcols)
   #matches = [j for i, j in zip(cols, dfcols) if i != j]
   matches = [x for x in s if x not in cols]
   matches = [y.lower() for y in matches]
+  print('matches: ')
   print(matches)
+  curul = []
+  asambleista = []
   if len(matches) > 0:
     print('Errores en columnas')
     nameErr = 'curul asambleista'
@@ -57,18 +65,18 @@ def validate_rows(df):
         v1, v2 = validate_num_col(value)
         curul.append(v1)
         asambleista.append(v2)
-    
-    df['Curul'] = curul
-    df['Asambleista'] = asambleista
-    del df[nameErr]
-    print(df)
+
+      df['curul'] = curul
+      df['asambleista'] = asambleista
+      del df[nameErr]
+
+    #print(df)
     return df
   
   return df
 
 def validate_df(df):
   df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-  validate_nans(df)
-  #df = validate_nans(df)
+  df = validate_nans(df)
   df = validate_rows(df)
   return df
