@@ -69,6 +69,5 @@ def validate_rows(df):
 def validate_df(df):
   df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
   validate_nans(df)
-  #df = validate_nans(df)
   df = validate_rows(df)
   return df
