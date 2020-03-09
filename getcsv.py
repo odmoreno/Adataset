@@ -125,8 +125,8 @@ class ADataset:
       if text == "abstencion": abstencionFlag = True
 
     self.sesionName = 'Sesion_' + sesion + '_v' + str(indice)
-    values.append(self.sesionName), values.append(sesion), values.append(asunto), values.append(fecha), values.append(hora), values.append(total), values.append(presente), values.append(ausente)
-    values.append(si), values.append(no), values.append(blanco), values.append(abstencion)
+    values.append(self.sesionName), values.append(sesion), values.append(fecha), values.append(hora), values.append(total), values.append(presente), values.append(ausente)
+    values.append(si), values.append(no), values.append(blanco), values.append(abstencion), values.append(asunto)
     print(values)
     return values
 

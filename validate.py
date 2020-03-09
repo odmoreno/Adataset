@@ -1,7 +1,11 @@
 import pandas as pd
+import csv
+
 
 mixFlag = False
 
+votos = ['SI', 'NO', 'BLANCO', 'ABSTENCION', 'AUSENTE']
+colsName = ['A1', 'A2', 'valor', 'voto']
 
 
 def validate_nans(df):
@@ -79,4 +83,42 @@ def validate_df(df):
   df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
   df = validate_nans(df)
   df = validate_rows(df)
+  return df
+
+
+def create_df(pathSesion):
+  votos = ['SI', 'NO', 'BLANCO', 'ABSTENCION', 'AUSENTE']
+  colsName = ['A1', 'A2', 'voto', 'valor']
+
+  df = pd.read_csv(pathSesion)
+  df = df[['asambleista', 'curul', 'voto']]
+
+  colVotos = df['voto']
+  tmpDf = pd.DataFrame(columns=colsName)
+
+  dict = {}
+  count = 0
+  for voto in votos:
+    if voto in colVotos.values:
+      votoDf = df.loc[df['voto'] == voto]
+      lol = votoDf.values.tolist()
+      for index, this in enumerate(lol):
+        for that in lol[index + 1:]:
+          info = [this[0], that[0], this[2], 1]
+          tmpDf = tmpDf.append(pd.Series(info, index=colsName), ignore_index=True)
+          dict[count] = info
+          count +=1
+          #print('this: ' + this[0] + ' that: ' + that[0])
+      print(tmpDf)
+    else:
+      print('No hay votos con: ' + voto)
+
+  return tmpDf, dict
+
+def create_zeros(df, tam):
+
+  for i in range(0, tam):
+    tmp = pd.DataFrame({"A1": 'test', "A2": 'test', "voto": 'test', "valor": [0]})
+    df = df.append(tmp, ignore_index=True)
+
   return df
