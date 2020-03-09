@@ -7,8 +7,8 @@ csvs = getcsv.ADataset()
 currentsession = ''
 indiceName = 'sesiones.csv'
 
-colNames = ['titulo', 'sesion', 'asunto', 'fecha', 'hora', 'total', 'presente', 'ausente', 'si', 'no', 'blanco', 'abstencion']
-sesDf =  pd.DataFrame(columns=colNames)
+colNames = ['titulo', 'sesion', 'fecha', 'hora', 'total', 'presente', 'ausente', 'si', 'no', 'blanco', 'abstencion', 'asunto']
+sesDf = pd.DataFrame(columns=colNames)
 
 
 for folderName, subfolders, filenames in os.walk(pdfsfolder):
