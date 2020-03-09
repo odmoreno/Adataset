@@ -40,9 +40,16 @@ def compareDf(df1, df2, currentD, dictflag):
                     valor = link[3] + 1
                     list = [aa1, aa2, link[2], valor]
                 else:
-                    v1 = lastdict[key]
-                    valor = v1[3] + 1
-                    list = [aa1, aa2, link[2], valor]
+                    print('Key: ' + str(key))
+                    if key in lastdict:
+                        print('Existe')
+                        v1 = lastdict[key]
+                        valor = v1[3] + 1
+                        list = [aa1, aa2, link[2], valor]
+                    else:
+                        print('No existe registro ')
+                        valor = link[3]
+                        list = [aa1, aa2, link[2], valor]
 
                 currentD[key] = list
                 print(currentD[key])
@@ -54,7 +61,7 @@ def compareDf(df1, df2, currentD, dictflag):
 
 for folderName, subfolders, filenames in os.walk(datafolder):
     print(filenames)
-
+    filenames.sort()
     for file in filenames:
         dpath = datafolder + file
         codf, dict = validate.create_df(dpath)
