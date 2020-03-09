@@ -125,7 +125,7 @@ def get_pdf(base_url, base_dir):
 def get_all_sessions(base_url, url, base_dir):
   links = get_links_to_nav(url)
   for link in links:
-    #Años 2013-2018
+    #Anios 2013-2018
     current_link = link.get('href')
     
     text = link.contents
